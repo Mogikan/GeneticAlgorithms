@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ASTU.GraphVisualizer
+namespace ASTU.Model
 {
     public enum GraphOrientationType
     {

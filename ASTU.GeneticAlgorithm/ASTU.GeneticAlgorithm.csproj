@@ -159,7 +159,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ProbabilityConstants.cs" />
+    <Compile Include="CommandOfT.cs" />
+    <Compile Include="PopulationHistoryItem.cs" />
     <Compile Include="RandomHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

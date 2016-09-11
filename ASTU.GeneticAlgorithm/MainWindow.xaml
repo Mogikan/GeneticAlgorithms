@@ -41,15 +41,15 @@
                 <toolkit:IntegerUpDown Value="{Binding ReproductionNumber }" Grid.Row="2" Grid.Column="1"></toolkit:IntegerUpDown>
 
                 <TextBlock Text="P мутации" Grid.Row="3" Grid.Column="0"></TextBlock>
-                <toolkit:IntegerUpDown Value="{Binding MutationProbability }" Grid.Row="3" Grid.Column="1"></toolkit:IntegerUpDown>
+                <toolkit:DoubleUpDown Increment="0.01" Value="{Binding MutationProbability }" Grid.Row="3" Grid.Column="1"></toolkit:DoubleUpDown>
 
                 <TextBlock Text="P выживания приспособленного" Grid.Row="4" Grid.Column="0"></TextBlock>
-                <toolkit:IntegerUpDown Value="{Binding GoodOrganizmSurvivalProbability }" Grid.Row="4" Grid.Column="1"></toolkit:IntegerUpDown>
+                <toolkit:DoubleUpDown Increment="0.01" Value="{Binding GoodOrganizmSurvivalProbability }" Grid.Row="4" Grid.Column="1"></toolkit:DoubleUpDown>
 
                 <TextBlock Text="P гибели неприспособленного" Grid.Row="5" Grid.Column="0"></TextBlock>
-                <toolkit:IntegerUpDown Value="{Binding BadOrganizmDeathProbability }" Grid.Row="5" Grid.Column="1"></toolkit:IntegerUpDown>
+                <toolkit:DoubleUpDown Increment="0.01" Value="{Binding BadOrganizmDeathProbability }" Grid.Row="5" Grid.Column="1"></toolkit:DoubleUpDown>
 
-                <Button Grid.Row="6" Grid.ColumnSpan="2" Content="Старт"/>
+                <Button Grid.Row="6" Grid.ColumnSpan="2" Command="{Binding StartGeneticAlgorithmCommand}" Content="Старт"/>
 
                 <TextBlock Text="Шаг сетки графика" Grid.Row="8" Grid.Column="0"></TextBlock>
                 <toolkit:IntegerUpDown Value="{Binding GridStep}" Grid.Row="8" Grid.Column="1"></toolkit:IntegerUpDown>

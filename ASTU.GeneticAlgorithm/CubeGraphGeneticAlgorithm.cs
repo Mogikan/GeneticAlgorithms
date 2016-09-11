@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ASTU.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,21 +7,34 @@ using System.Threading.Tasks;
 
 namespace ASTU.GeneticAlgorithm
 {
-    public class CubeGraphGeneticAlgorithm : GeneticAlgorithm
+    internal class CubeGraphGeneticAlgorithm : GeneticAlgorithm
     {
-        public CubeGraphGeneticAlgorithm(GeneticAlgoritmParameters geneticParameters) :base(geneticParameters)
+        public CubeGraphGeneticAlgorithm(Graph graph)
         {
-        }
-        internal override void Mutate()
-        {            
+            _graph = graph;
         }
 
-        internal override void NaturalSelect()
-        {            
+        private Graph _graph;
+
+        public override Organizm CreateOrganizm()
+        {
+            return new Organizm(_graph);
         }
 
-        internal override void ProduceChildren()
-        {            
+        internal override Tuple<Organizm, Organizm> ProduceChildren(Organizm parent1, Organizm parent2)
+        {
+            return Organizm.ProduceChildren(_graph, parent1, parent2);
         }
+
+        public override double MeasureFitness(Organizm organizm)
+        {
+            return organizm.MeasureFitness(_graph);
+        }
+
+        internal override Organizm ProduceMutant(Organizm organizm)
+        {
+            return organizm.Mutate(_graph);
+        }
+
     }
 }

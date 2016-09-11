@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ASTU.GraphVisualizer
+namespace ASTU.Model
 {
     public class Graph
     {
         public Graph(int vertexCount, GraphOrientationType orientation = GraphOrientationType.NotOriented)
         {
-            _adjacencyMatrix = new int[vertexCount][];
+            _adjacencyMatrix = new double[vertexCount][];
             for (int i = 0; i < vertexCount; i++)
             {
-                _adjacencyMatrix[i] = new int[vertexCount];
+                _adjacencyMatrix[i] = new double[vertexCount];
             }
             _graphOrientationType = orientation;
         }
         
-        public Graph(int[][] adjacencyMatrix,GraphOrientationType orientation = GraphOrientationType.NotOriented):this(adjacencyMatrix.Length, orientation)
+        public Graph(double[][] adjacencyMatrix,GraphOrientationType orientation = GraphOrientationType.NotOriented):this(adjacencyMatrix.Length, orientation)
         {
             for (int i= 0;i< VertexCount;i++)
             {
@@ -30,7 +31,7 @@ namespace ASTU.GraphVisualizer
 
         }
         private GraphOrientationType _graphOrientationType;
-        private int[][] _adjacencyMatrix;
+        private double[][] _adjacencyMatrix;
         public void AddEdge(int vertexFrom, int vertexTo, int weight)
         {
             _adjacencyMatrix[vertexFrom][vertexTo] = weight;
@@ -57,6 +58,29 @@ namespace ASTU.GraphVisualizer
             return result;
         }
 
+        public Graph GetSubGraph(bool[] edgesToInclude)
+        {
+            int edgeCounter = 0;
+            double[][] subGraphAdjancencyMatrix = new double[VertexCount][];
+            for (int i = 0; i < VertexCount; i++)
+            {
+                subGraphAdjancencyMatrix[i] = new double[VertexCount];
+
+                for (int j = 0; j <= i; j++)
+                {
+                    if (_adjacencyMatrix[i][j] > 0)
+                    {
+                        if (edgesToInclude[edgeCounter])
+                        {
+                            subGraphAdjancencyMatrix[i][j] = _adjacencyMatrix[i][j];
+                            edgeCounter++;
+                        }                        
+                    }
+                }
+            }
+            return new Graph(subGraphAdjancencyMatrix);
+        }
+
         public int GetNumberOfEdges()
         {
             int result = 0;
@@ -72,9 +96,25 @@ namespace ASTU.GraphVisualizer
             }
             return result;
         }
-        public void DrawGraph()
+        public static Graph FromFile(string filePath)
         {
-
+            using (StreamReader graphReader = new StreamReader(new FileStream(filePath, FileMode.Open)))
+            {
+                var graphLine = graphReader.ReadLine();
+                var graphLineValues = graphLine.Split(' ');
+                var vertexCount = graphLineValues.Length;
+                var graphMatrix = new double[vertexCount][];
+                for (int i = 0; i < vertexCount; i++)
+                {
+                    graphMatrix[i] = new double[vertexCount];
+                    for (int j = 0; j < vertexCount; j++)
+                    {
+                        graphMatrix[i][j] = Convert.ToDouble(graphLineValues[j]);
+                    }
+                    graphLine = graphReader.ReadLine();
+                }
+                return new Graph(graphMatrix);
+            }            
         }
     }
 

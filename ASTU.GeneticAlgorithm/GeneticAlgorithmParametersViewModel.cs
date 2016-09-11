@@ -1,29 +1,50 @@
-﻿using Sparrow.Chart;
+﻿using ASTU.Model;
+using Sparrow.Chart;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ASTU.GeneticAlgorithm
 {
     public class GeneticAlgorithmParametersViewModel : Observable
     {
         public GeneticAlgorithmParametersViewModel()
-        {
-            _averageFitness.Add(new DoublePoint() { Data = 0, Value = 10 });
-            _averageFitness.Add(new DoublePoint() { Data = 1, Value = 20 });
-            _averageFitness.Add(new DoublePoint() { Data = 2, Value = 30 });
+        {            
+            _geneticAlgorithm = new CubeGraphGeneticAlgorithm(Graph.FromFile(@"..\..\GraphData.txt"));
+            _startGeneticAlgorithmCommand = new Command<object>((mockParams) => 
+            {
+                _geneticAlgorithm.Execute(_geneticParameters);
+                var averageFitness = new PointsCollection();
+                var maxFitness = new PointsCollection();
+                var minFitness = new PointsCollection();
+                var maxPoints = _geneticAlgorithm.History.Select((historyItem) => new DoublePoint() { Data = historyItem.Generation, Value = historyItem.BestOrganismFitness });
+                foreach (var point in maxPoints)
+                {
+                    maxFitness.Add(point);
+                }
+                var minPoints = _geneticAlgorithm.History.Select((historyItem) => new DoublePoint() { Data = historyItem.Generation, Value = historyItem.WorstOrganismFitness });
+                foreach (var point in minPoints)
+                {
+                    minFitness.Add(point);
+                }
+                var averagePoints = _geneticAlgorithm.History.Select((historyItem) => new DoublePoint() { Data = historyItem.Generation, Value = historyItem.AverageOrganismFitness });
+                foreach (var point in averagePoints)
+                {
+                    averageFitness.Add(point);
+                }
+                AverageFitness = averageFitness;
+                MinFitness = minFitness;
+                MaxFitness = maxFitness;
 
-            _maxFitness.Add(new DoublePoint() { Data = 0, Value = 11 });
-            _maxFitness.Add(new DoublePoint() { Data = 1, Value = 22 });
-            _maxFitness.Add(new DoublePoint() { Data = 2, Value = 33 });
 
-            _minFitness.Add(new DoublePoint() { Data = 0, Value = 9 });
-            _minFitness.Add(new DoublePoint() { Data = 1, Value = 18 });
-            _minFitness.Add(new DoublePoint() { Data = 2, Value = 28 });
+            });
         }
+
+        private GeneticAlgorithm _geneticAlgorithm;
         private GeneticAlgoritmParameters _geneticParameters = new GeneticAlgoritmParameters();        
         public int InitialPopulationSize
         {
@@ -49,6 +70,20 @@ namespace ASTU.GeneticAlgorithm
                 NotifyPropertyChanged(() => GenerationCount);
             }
         }
+        private ICommand _startGeneticAlgorithmCommand;
+        public ICommand StartGeneticAlgorithmCommand
+        {
+            get
+            {
+                return _startGeneticAlgorithmCommand;
+            }
+            set
+            {
+                _startGeneticAlgorithmCommand = value;
+                NotifyPropertyChanged(() => StartGeneticAlgorithmCommand);
+            }
+        }
+
         public int ReproductionNumber
         {
             get
@@ -61,7 +96,7 @@ namespace ASTU.GeneticAlgorithm
                 NotifyPropertyChanged(() => ReproductionNumber);
             }
         }
-        public int MutationProbability
+        public double MutationProbability
         {
             get
             {
@@ -73,7 +108,7 @@ namespace ASTU.GeneticAlgorithm
                 NotifyPropertyChanged(() => MutationProbability);
             }
         }
-        public int GoodOrganizmSurvivalProbability
+        public double GoodOrganizmSurvivalProbability
         {
             get
             {
@@ -85,7 +120,7 @@ namespace ASTU.GeneticAlgorithm
                 NotifyPropertyChanged(() => GoodOrganizmSurvivalProbability);
             }
         }
-        public int BadOrganizmDeathProbability
+        public double BadOrganizmDeathProbability
         {
             get
             {

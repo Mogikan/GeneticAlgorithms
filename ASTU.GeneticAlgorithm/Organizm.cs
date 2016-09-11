@@ -1,4 +1,4 @@
-﻿using ASTU.GraphVisualizer;
+﻿using ASTU.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,21 +19,42 @@ namespace ASTU.GeneticAlgorithm
             }
             _graph = graph;
         }
+
+        public Organizm(Graph graph,bool[] organizmBits)
+        {
+            _organizmBits = organizmBits;
+            _graph = graph;
+        }
         public Organizm(Graph graph, bool[] firstParentGenes, bool[] secondParentGenes):this(graph)
         {
             _organizmBits = ConcatGenes(firstParentGenes, secondParentGenes);
         }
 
-
-        public void Mutate()
+        public double MeasureFitness(Graph graph)
         {
-            for (int i = 0; i < GenesCount; i++)
+            double penaltyFactor = _graph.VertexCount;
+            double vertexScoreFactor = 1;
+            var penalty = _organizmBits.Any(bit => bit)?0:1;
+            var organizmGraph = _graph.GetSubGraph(_organizmBits);
+            var organizmScore = penalty * penaltyFactor;
+            for (int i = 0; i < organizmGraph.VertexCount; i++)
             {
-                if (RandomHelper.NextDouble() > ProbabilityConstants.MutationProbability)
+                if (organizmGraph.CalculateVertexDegree(i) == 0 || organizmGraph.CalculateVertexDegree(i) == 3)
                 {
-                    _organizmBits[i] = !_organizmBits[i];
+                    organizmScore += 1 * vertexScoreFactor;
                 }
             }
+            return organizmScore;
+        }
+
+        public Organizm Mutate(Graph graph)
+        {
+            var mutantBits = new bool[_organizmBits.Length];
+            for (int i = 0; i < GenesCount; i++)
+            {
+                mutantBits[i] = !_organizmBits[i];
+            }
+            return new Organizm(graph,mutantBits);
         }
 
         private bool[] ConcatGenes(bool[] first, bool[] after)
