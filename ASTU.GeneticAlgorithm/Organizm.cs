@@ -43,6 +43,10 @@ namespace ASTU.GeneticAlgorithm
                 {
                     organizmScore += 1 * vertexScoreFactor;
                 }
+                else
+                {
+                    organizmScore -= 2 * vertexScoreFactor;
+                }
             }
             return organizmScore;
         }

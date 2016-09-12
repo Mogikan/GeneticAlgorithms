@@ -58,6 +58,15 @@ namespace ASTU.GeneticAlgorithm
                 NotifyPropertyChanged(()=>InitialPopulationSize);
             }
         }
+
+     
+        public int MaxGridValue
+        {
+            get
+            {
+                return GenerationCount;
+            }            
+        }
         public int GenerationCount
         {
             get
@@ -68,6 +77,7 @@ namespace ASTU.GeneticAlgorithm
             {
                 _geneticParameters.GenerationCount = value;
                 NotifyPropertyChanged(() => GenerationCount);
+                NotifyPropertyChanged(() => MaxGridValue);
             }
         }
         private ICommand _startGeneticAlgorithmCommand;

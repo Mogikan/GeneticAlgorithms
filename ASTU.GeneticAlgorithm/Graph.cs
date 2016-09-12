@@ -100,7 +100,7 @@ namespace ASTU.Model
         {
             using (StreamReader graphReader = new StreamReader(new FileStream(filePath, FileMode.Open)))
             {
-                var graphLine = graphReader.ReadLine();
+                var graphLine = graphReader.ReadLine().TrimEnd();
                 var graphLineValues = graphLine.Split(' ');
                 var vertexCount = graphLineValues.Length;
                 var graphMatrix = new double[vertexCount][];
