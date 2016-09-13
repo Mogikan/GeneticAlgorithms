@@ -55,16 +55,19 @@
                 <toolkit:IntegerUpDown Value="{Binding GridStep}" Grid.Row="8" Grid.Column="1"></toolkit:IntegerUpDown>
                 
             </Grid>
-            <sparrow:SparrowChart Margin="20" Grid.Column="1" Theme="Rainbow" OverlayMode="SeriesFirst">
+            <sparrow:SparrowChart  Margin="20" Grid.Column="1" Theme="Rainbow" OverlayMode="SeriesFirst">
+                <sparrow:SparrowChart.Legend>
+                    <sparrow:Legend Header="Организмы по поколениям" LegendPosition="Outside" HorizontalAlignment="Right" VerticalAlignment="Top" ShowIcon="True"></sparrow:Legend>
+                </sparrow:SparrowChart.Legend>
                 <sparrow:SparrowChart.XAxis>
-                    <sparrow:LinearXAxis/>
+                    <sparrow:LinearXAxis MaxValue="{Binding MaxGridValue}"/>
                 </sparrow:SparrowChart.XAxis>
                 <sparrow:SparrowChart.YAxis>
-                    <sparrow:LinearYAxis/>
+                    <sparrow:LinearYAxis />
                 </sparrow:SparrowChart.YAxis>
-                <sparrow:LineSeries Points="{Binding MinFitness}"/>
-                <sparrow:LineSeries Points="{Binding AverageFitness}"/>
-                <sparrow:LineSeries Points="{Binding MaxFitness}"/>
+                <sparrow:LineSeries Label="Худший" Points="{Binding MinFitness}"/>
+                <sparrow:LineSeries Label="Средний" Points="{Binding AverageFitness}"/>
+                <sparrow:LineSeries Label="Лучший" Points="{Binding MaxFitness}"/>
                 
 
             </sparrow:SparrowChart>

@@ -34,6 +34,7 @@ namespace ASTU.GeneticAlgorithm
         public void Execute(GeneticAlgoritmParameters geneticParameters)
         {
             _geneticAlgorithmParameters = geneticParameters;
+            _history.Clear();
             InitPopulation();
             for (int i = 0; i < _geneticAlgorithmParameters.GenerationCount; i++)
             {
