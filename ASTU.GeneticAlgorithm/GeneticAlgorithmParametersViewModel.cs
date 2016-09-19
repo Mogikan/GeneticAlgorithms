@@ -17,31 +17,51 @@ namespace ASTU.GeneticAlgorithm
             _geneticAlgorithm = new CubeGraphGeneticAlgorithm(Graph.FromFile(@"..\..\GraphData.txt"));
             _startGeneticAlgorithmCommand = new Command<object>((mockParams) => 
             {
-                _geneticAlgorithm.Execute(_geneticParameters);
-                var averageFitness = new PointsCollection();
-                var maxFitness = new PointsCollection();
-                var minFitness = new PointsCollection();
-                var maxPoints = _geneticAlgorithm.History.Select((historyItem) => new DoublePoint() { Data = historyItem.Generation, Value = historyItem.BestOrganismFitness });
-                foreach (var point in maxPoints)
+                new Task(() =>
                 {
-                    maxFitness.Add(point);
-                }
-                var minPoints = _geneticAlgorithm.History.Select((historyItem) => new DoublePoint() { Data = historyItem.Generation, Value = historyItem.WorstOrganismFitness });
-                foreach (var point in minPoints)
-                {
-                    minFitness.Add(point);
-                }
-                var averagePoints = _geneticAlgorithm.History.Select((historyItem) => new DoublePoint() { Data = historyItem.Generation, Value = historyItem.AverageOrganismFitness });
-                foreach (var point in averagePoints)
-                {
-                    averageFitness.Add(point);
-                }
-                AverageFitness = averageFitness;
-                MinFitness = minFitness;
-                MaxFitness = maxFitness;
-
+                    _geneticAlgorithm.Execute(_geneticParameters, (progress) => ProgressValue = progress);
+                    var averageFitness = new PointsCollection();
+                    var maxFitness = new PointsCollection();
+                    var minFitness = new PointsCollection();
+                    var maxPoints = _geneticAlgorithm.History.Select((historyItem) => new DoublePoint() { Data = historyItem.Generation, Value = historyItem.BestOrganismFitness });
+                    foreach (var point in maxPoints)
+                    {
+                        maxFitness.Add(point);
+                    }
+                    var minPoints = _geneticAlgorithm.History.Select((historyItem) => new DoublePoint() { Data = historyItem.Generation, Value = historyItem.WorstOrganismFitness });
+                    foreach (var point in minPoints)
+                    {
+                        minFitness.Add(point);
+                    }
+                    var averagePoints = _geneticAlgorithm.History.Select((historyItem) => new DoublePoint() { Data = historyItem.Generation, Value = historyItem.AverageOrganismFitness });
+                    foreach (var point in averagePoints)
+                    {
+                        averageFitness.Add(point);
+                    }
+                    AverageFitness = averageFitness;
+                    MinFitness = minFitness;
+                    MaxFitness = maxFitness;
+                    NotifyPropertyChanged(() => MaxGridValue);
+                }).Start();
 
             });
+        }
+
+        private int _progressValue = 0;
+        public int ProgressValue
+        {
+            get
+            {
+                return _progressValue;
+            }
+            set
+            {
+                if (value != _progressValue)
+                {
+                    _progressValue = value;
+                    NotifyPropertyChanged(() => ProgressValue);
+                }
+            }
         }
 
         private GeneticAlgorithm _geneticAlgorithm;
@@ -58,7 +78,6 @@ namespace ASTU.GeneticAlgorithm
                 NotifyPropertyChanged(()=>InitialPopulationSize);
             }
         }
-
      
         public int MaxGridValue
         {
@@ -76,8 +95,7 @@ namespace ASTU.GeneticAlgorithm
             set
             {
                 _geneticParameters.GenerationCount = value;
-                NotifyPropertyChanged(() => GenerationCount);
-                NotifyPropertyChanged(() => MaxGridValue);
+                NotifyPropertyChanged(() => GenerationCount);         
             }
         }
         private ICommand _startGeneticAlgorithmCommand;

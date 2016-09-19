@@ -10,7 +10,7 @@ namespace ASTU.GeneticAlgorithm
     {
         public GeneticAlgorithm()
         {
-            _population = new List<Organizm>();            
+            _population = new List<Organizm>();
         }
         private GeneticAlgoritmParameters _geneticAlgorithmParameters;
         private List<Organizm> _population;
@@ -31,7 +31,7 @@ namespace ASTU.GeneticAlgorithm
             }
         }
 
-        public void Execute(GeneticAlgoritmParameters geneticParameters)
+        public void Execute(GeneticAlgoritmParameters geneticParameters,Action<int> progressCallback)
         {
             _geneticAlgorithmParameters = geneticParameters;
             _history.Clear();
@@ -46,6 +46,7 @@ namespace ASTU.GeneticAlgorithm
                     Generation = i,
                 });
                 ExecuteStep();
+                progressCallback(i*100/_geneticAlgorithmParameters.GenerationCount);
             }
         }
         public void ExecuteStep()
@@ -59,9 +60,9 @@ namespace ASTU.GeneticAlgorithm
         {
             HashSet<int> fightOrganisms = new HashSet<int>();
             HashSet<int> diedOrganisms = new HashSet<int>();
-            for (int i = 0; i < _geneticAlgorithmParameters.ReproductionNumber*2; i++)
+            for (int i = 0; i < _geneticAlgorithmParameters.ReproductionNumber * 2; i++)
             {
-                int randomFighterIndex1 = RandomHelper.NextInt(_geneticAlgorithmParameters.InitialPopulationSize + _geneticAlgorithmParameters.ReproductionNumber*2);
+                int randomFighterIndex1 = RandomHelper.NextInt(_geneticAlgorithmParameters.InitialPopulationSize + _geneticAlgorithmParameters.ReproductionNumber * 2);
                 while (fightOrganisms.Contains(randomFighterIndex1))
                 {
                     randomFighterIndex1 = RandomHelper.NextInt(_geneticAlgorithmParameters.InitialPopulationSize + _geneticAlgorithmParameters.ReproductionNumber * 2);
@@ -76,8 +77,8 @@ namespace ASTU.GeneticAlgorithm
                 int deathIndex;
                 if (RandomHelper.NextDouble() < _geneticAlgorithmParameters.BadOrganizmDeathProbability)
                 {
-                    
-                    deathIndex = ( MeasureFitness(_population[randomFighterIndex1]) < MeasureFitness(_population[randomFighterIndex2])) ? randomFighterIndex1 : randomFighterIndex2;
+
+                    deathIndex = (MeasureFitness(_population[randomFighterIndex1]) < MeasureFitness(_population[randomFighterIndex2])) ? randomFighterIndex1 : randomFighterIndex2;
                 }
                 else
                 {
@@ -99,24 +100,26 @@ namespace ASTU.GeneticAlgorithm
         public abstract double MeasureFitness(Organizm organizm);
         internal void Mutate()
         {
-            for (int i = 0; i < _population.Count; i++)
+            Parallel.For(0, _population.Count, (i) =>
             {
-                if (RandomHelper.NextDouble() < _geneticAlgorithmParameters.MutationProbability)
                 {
-                    var originalOrganizm = _population[i];
-                    var mutant = ProduceMutant(_population[i]);
-                    Organizm leftOrganizm;
-                    if (RandomHelper.NextDouble() < _geneticAlgorithmParameters.GoodOrganizmSurvivalProbability)
+                    if (RandomHelper.NextDouble() < _geneticAlgorithmParameters.MutationProbability)
                     {
-                        leftOrganizm = MeasureFitness(mutant) > MeasureFitness(originalOrganizm) ? mutant : originalOrganizm;
+                        var originalOrganizm = _population[i];
+                        var mutant = ProduceMutant(_population[i]);
+                        Organizm leftOrganizm;
+                        if (RandomHelper.NextDouble() < _geneticAlgorithmParameters.GoodOrganizmSurvivalProbability)
+                        {
+                            leftOrganizm = MeasureFitness(mutant) > MeasureFitness(originalOrganizm) ? mutant : originalOrganizm;
+                        }
+                        else
+                        {
+                            leftOrganizm = MeasureFitness(mutant) < MeasureFitness(originalOrganizm) ? mutant : originalOrganizm;
+                        }
+                        _population[i] = leftOrganizm;
                     }
-                    else
-                    {
-                        leftOrganizm = MeasureFitness(mutant) < MeasureFitness(originalOrganizm) ? mutant : originalOrganizm;
-                    }
-                    _population[i] = leftOrganizm;
                 }
-            }
+            });
         }
         internal abstract Tuple<Organizm, Organizm> ProduceChildren(Organizm parent1, Organizm parent2);
         internal abstract Organizm ProduceMutant(Organizm organizm);
@@ -130,9 +133,9 @@ namespace ASTU.GeneticAlgorithm
                 while (_organizmUsedForReproduction.Contains(randomParentIndex1))
                 {
                     randomParentIndex1 = RandomHelper.NextInt(_geneticAlgorithmParameters.InitialPopulationSize);
-                }                
+                }
                 int randomParentIndex2 = RandomHelper.NextInt(_geneticAlgorithmParameters.InitialPopulationSize);
-                while (randomParentIndex2!=randomParentIndex1 &&_organizmUsedForReproduction.Contains(randomParentIndex2))
+                while (randomParentIndex2 != randomParentIndex1 && _organizmUsedForReproduction.Contains(randomParentIndex2))
                 {
                     randomParentIndex2 = RandomHelper.NextInt(_geneticAlgorithmParameters.InitialPopulationSize);
                 }
@@ -142,7 +145,7 @@ namespace ASTU.GeneticAlgorithm
                 var parent2 = _population[randomParentIndex2];
                 var children = ProduceChildren(parent1, parent2);
                 _population.Add(children.Item1);
-                _population.Add(children.Item2);                           
+                _population.Add(children.Item2);
             }
         }
     }

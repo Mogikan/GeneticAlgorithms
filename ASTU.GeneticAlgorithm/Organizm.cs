@@ -39,13 +39,17 @@ namespace ASTU.GeneticAlgorithm
             var organizmScore = penalty * penaltyFactor;
             for (int i = 0; i < organizmGraph.VertexCount; i++)
             {
-                if (organizmGraph.CalculateVertexDegree(i) == 0 || organizmGraph.CalculateVertexDegree(i) == 3)
+                var vertexDegree = organizmGraph.CalculateVertexDegree(i);
+                if (vertexDegree == 0 || vertexDegree == 3)
                 {
                     organizmScore += 1 * vertexScoreFactor;
                 }
                 else
                 {
-                    organizmScore -= 2 * vertexScoreFactor;
+                    if (vertexDegree > 3)
+                    {
+                        organizmScore -= vertexDegree * vertexScoreFactor;
+                    }
                 }
             }
             return organizmScore;

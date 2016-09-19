@@ -72,9 +72,19 @@ namespace ASTU.Model
                     {
                         if (edgesToInclude[edgeCounter])
                         {
-                            subGraphAdjancencyMatrix[i][j] = _adjacencyMatrix[i][j];
-                            edgeCounter++;
-                        }                        
+                            subGraphAdjancencyMatrix[i][j] = _adjacencyMatrix[i][j];                            
+                        }
+                        edgeCounter++;
+                    }
+                }
+            }
+            for (int i = 0; i < VertexCount; i++)
+            {
+                for (int j = 0; j <= i; j++)
+                {
+                    if (_adjacencyMatrix[i][j] > 0)
+                    {
+                        subGraphAdjancencyMatrix[j][i] = _adjacencyMatrix[i][j];
                     }
                 }
             }
@@ -106,12 +116,16 @@ namespace ASTU.Model
                 var graphMatrix = new double[vertexCount][];
                 for (int i = 0; i < vertexCount; i++)
                 {
+                    if (i != 0)
+                    {
+                        graphLine = graphReader.ReadLine().TrimEnd();
+                        graphLineValues = graphLine.Split(' ');
+                    }
                     graphMatrix[i] = new double[vertexCount];
                     for (int j = 0; j < vertexCount; j++)
                     {
                         graphMatrix[i][j] = Convert.ToDouble(graphLineValues[j]);
                     }
-                    graphLine = graphReader.ReadLine();
                 }
                 return new Graph(graphMatrix);
             }            

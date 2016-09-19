@@ -51,9 +51,9 @@
 
                 <Button Grid.Row="6" Grid.ColumnSpan="2" Command="{Binding StartGeneticAlgorithmCommand}" Content="Старт"/>
 
-                <TextBlock Text="Шаг сетки графика" Grid.Row="8" Grid.Column="0"></TextBlock>
-                <toolkit:IntegerUpDown Value="{Binding GridStep}" Grid.Row="8" Grid.Column="1"></toolkit:IntegerUpDown>
-                
+                <!--<TextBlock Text="Шаг сетки графика" Grid.Row="8" Grid.Column="0"></TextBlock>
+                <toolkit:IntegerUpDown Value="{Binding GridStep}" Grid.Row="8" Grid.Column="1"></toolkit:IntegerUpDown>-->
+                <ProgressBar Grid.Row="8" Value="{Binding ProgressValue}"/>
             </Grid>
             <sparrow:SparrowChart  Margin="20" Grid.Column="1" Theme="Rainbow" OverlayMode="SeriesFirst">
                 <sparrow:SparrowChart.Legend>

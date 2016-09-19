@@ -14,5 +14,18 @@ namespace ASTU.GeneticAlgorithm
         public double MutationProbability { get; set; } = 0.05;
         public double GoodOrganizmSurvivalProbability { get; set; } = 0.99;
         public double BadOrganizmDeathProbability { get; set; } = 0.95;
+
+        public GeneticAlgoritmParameters Clone()
+        {
+            return new GeneticAlgoritmParameters()
+            {
+                InitialPopulationSize = this.InitialPopulationSize,
+                GenerationCount = this.GenerationCount,
+                ReproductionNumber = this.ReproductionNumber,
+                MutationProbability = this.MutationProbability,
+                GoodOrganizmSurvivalProbability = this.GoodOrganizmSurvivalProbability,
+                BadOrganizmDeathProbability = this.BadOrganizmDeathProbability,
+            };            
+        }
     }
 }
